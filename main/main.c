@@ -51,11 +51,9 @@ void LCD_DemoTask(void* param)
     char num[20];
     while (true) {
         LCD_home();
-	LCD_clearScreen();
 //	sprintf(num, "%s", out_string);
         LCD_writeStr(out_string);
         vTaskDelay(100 / portTICK_RATE_MS);
-        LCD_clearScreen();
         }
   
 }
@@ -110,7 +108,7 @@ create_args_2.dispatch_method = ESP_TIMER_TASK;
 create_args_2.name = "esp_timer_2";
 esp_timer_create(&create_args_2, &timer_handle_2);
 
-esp_timer_start_periodic(timer_handle , 1000);
+esp_timer_start_periodic(timer_handle , 10000);
 
     LCD_init(LCD_ADDR, SDA_PIN, SCL_PIN, LCD_COLS, LCD_ROWS);
     xTaskCreate(LCD_DemoTask, "Demo Task", 2048, NULL, 5, NULL);
