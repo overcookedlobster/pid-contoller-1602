@@ -15,9 +15,9 @@
 #define LCD_COLS 16
 #define LCD_ROWS 2
 
-#define GPIO_INPUT_IO_0 34
-#define GPIO_INPUT_IO_1 35
-#define GPIO_INPUT_IO_2 32
+#define GPIO_INPUT_IO_0 5
+#define GPIO_INPUT_IO_1 18
+#define GPIO_INPUT_IO_2 19
 #define GPIO_INPUT_PIN_SEL ((1ULL<<GPIO_INPUT_IO_0) | (1ULL<<GPIO_INPUT_IO_1)| (1ULL<<GPIO_INPUT_IO_2))
 esp_timer_create_args_t create_args;
 esp_timer_handle_t timer_handle;
