@@ -65,7 +65,7 @@ float i_value = 1;
 float d_value = 0.1;
 float *out_val; 
 char out_string[10];
-float setpoint = 20.0f;
+float setpoint = 2.0f;
 
 static void rx_task(void *arg)
 {
@@ -102,21 +102,9 @@ void LCD_DemoTask(void* param)
         }
   
 }
-void timer_expired_1(void *p){
-	flag = 1;
-
-}
-
-void timer_expired_2(void *p){
-	rapid_flag = 1;
-
-}
-void timer_expired_3(void *p){
-	timer_flag = 1;
-
-}
-
-void timer_expired(void *p){
+void baca_data(void* param_2)
+{
+	while(true){
 	button_sel = gpio_get_level(GPIO_INPUT_IO_0) ? 0:1;
 	button_op = ((gpio_get_level(GPIO_INPUT_IO_1))? 0:(-1)) + ((gpio_get_level(GPIO_INPUT_IO_2))? 0:(1));
 	fsm_debouncing_sel(button_sel, &state_sel, &flag, &state_pid);
@@ -136,6 +124,24 @@ void timer_expired(void *p){
 
 	if(state_op == RAPID) esp_timer_start_once(timer_handle_2, 250000);
 	else esp_timer_stop(timer_handle_2);
+	vTaskDelay(10 / portTICK_RATE_MS);
+	};  
+}
+void timer_expired_1(void *p){
+	flag = 1;
+
+}
+
+void timer_expired_2(void *p){
+	rapid_flag = 1;
+
+}
+void timer_expired_3(void *p){
+	timer_flag = 1;
+
+}
+
+void timer_expired(void *p){
 }
 
 
@@ -170,10 +176,10 @@ create_args_3.dispatch_method = ESP_TIMER_TASK;
 create_args_3.name = "esp_timer_3";
 esp_timer_create(&create_args_3, &timer_handle_3);
 
-esp_timer_start_periodic(timer_handle , 10000);
 
     LCD_init(LCD_ADDR, SDA_PIN, SCL_PIN, LCD_COLS, LCD_ROWS);
-    xTaskCreate(LCD_DemoTask, "Demo Task", 2048, NULL, 5, NULL);
+    xTaskCreate(LCD_DemoTask, "Demo Task", 2048, NULL, 3, NULL);
+xTaskCreate(baca_data, "baca_data", 1024*2, NULL, configMAX_PRIORITIES-1, NULL);
  const uart_config_t uart_config = {                                        
     .baud_rate = 115200,
     .data_bits = UART_DATA_8_BITS,                                         
@@ -187,7 +193,7 @@ uart_driver_install(UART_NUM_2, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
 uart_param_config(UART_NUM_2, &uart_config);
 uart_set_pin(UART_NUM_2, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
                                                                            
-xTaskCreate(rx_task, "uart_rx_task", 1024*2, NULL, configMAX_PRIORITIES-1, NULL);
+xTaskCreate(rx_task, "uart_rx_task", 1024*2, NULL, configMAX_PRIORITIES, NULL);
    
 }
 
